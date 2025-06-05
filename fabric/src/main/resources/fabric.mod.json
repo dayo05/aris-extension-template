@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "aris-entity",
+  "version": "${version}",
+  "name": "aris-entity",
+  "description": "Aris entity extension",
+  "authors": [
+    "Dayo"
+  ],
+  "contact": {
+    "homepage": ""
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/aris-entity/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.ddayo.arisentity.fabric.ArisEntityFabric"
+    ],
+    "client": [
+      "me.ddayo.arisentity.fabric.client.ArisEntityFabricClient"
+    ],
+    "aris-init": [
+      "me.ddayo.arisentity.fabric.ArisEntityFabricInitEngineExtension"
+    ]
+  },
+  "mixins": [
+    "aris-entity.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.14",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*",
+    "aris": "*"
+  }
+}
