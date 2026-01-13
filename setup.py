@@ -210,6 +210,8 @@ import me.ddayo.aris.luagen.LuaProvider
 @LuaProvider({provider_name}.PROVIDER)
 object {provider_name} {{
     const val PROVIDER = "{provider_const}Generated"
+    @LuaFunction
+    fun dummy() {}
 }}""")
 
         # 2. Fabric Extension
@@ -303,8 +305,14 @@ def update_fabric_mod_json(package_name, mod_id):
 
     # Build Entrypoints
     entrypoints = {
-        "main": [f"{base_pkg}.fabric.{pascal_mod_id}Fabric"],
-        "client": [f"{base_pkg}.client.fabric.{pascal_mod_id}FabricClient"]
+        "main": [{
+            "adaptor": "kotlin",
+            "value": f"{base_pkg}.fabric.{pascal_mod_id}Fabric"
+        }],
+        "client": [{
+            "adaptor": "kotlin",
+            "value": f"{base_pkg}.client.fabric.{pascal_mod_id}FabricClient"
+        }]
     }
 
     configs = [
