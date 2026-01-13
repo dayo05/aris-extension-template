@@ -117,7 +117,7 @@ plugins {
         f.write(auto_content)
     print("✅ settings.gradle updated.")
 
-def update_common_gradle(package_name, export_doc):
+def update_common_gradle(package_name, mod_id, export_doc):
     print("🐘 Updating common/build.gradle...")
     gradle_path = "common/build.gradle"
     marker = "// --- Auto-Generated Settings ---"
@@ -132,7 +132,7 @@ def update_common_gradle(package_name, export_doc):
         if final_lines and not final_lines[-1].endswith('\n'): final_lines[-1] += '\n'
         if final_lines and final_lines[-1].strip() != "": final_lines.append("\n")
 
-    ksp_block = f"{marker}\nksp {{\n    arg(\"package_name\", \"{package_name}.lua.glue\")\n    arg(\"export_doc\", \"{export_doc}\")\n}}\n"
+    ksp_block = f"{marker}\nksp {{\n    arg(\"package_name\", \"{package_name}.{mod_id}.lua.glue\")\n    arg(\"export_doc\", \"{export_doc}\")\n}}\n"
     with open(gradle_path, "w", encoding="utf-8") as f:
         f.writelines(final_lines)
         f.write(ksp_block)
@@ -209,7 +209,7 @@ import me.ddayo.aris.luagen.LuaProvider
 
 @LuaProvider({provider_name}.PROVIDER)
 object {provider_name} {{
-    const val PROVIDER = "{provider_const}"
+    const val PROVIDER = "{provider_const}Generated"
 }}""")
 
         # 2. Fabric Extension
@@ -380,7 +380,7 @@ def main():
     # 1. Config Files
     update_gradle_properties(MOD_ID, PACKAGE_NAME, ARCHIVES_NAME, MOD_DESCRIPTION, MOD_AUTHOR, EXPORT_DOC)
     update_settings_gradle(ARCHIVES_NAME)
-    update_common_gradle(PACKAGE_NAME, EXPORT_DOC)
+    update_common_gradle(PACKAGE_NAME, MOD_ID, EXPORT_DOC)
 
     # 2. Resources (Mixin Rename)
     finalize_mixin_rename(MOD_ID)

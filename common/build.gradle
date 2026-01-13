@@ -29,8 +29,10 @@ processResources {
     inputs.property 'mod_id', project.modId
 
     filesMatching("${project.modId}.mixins.json") {
-        expand mod_id: project.modId
-        expand mod_package: project.group
+        expand(
+                mod_id: project.modId,
+                mod_package: project.group
+        )
     }
 }
 
