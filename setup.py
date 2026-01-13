@@ -151,13 +151,30 @@ def create_kotlin_templates(package_name, mod_id):
          f"package {package_name}.{mod_id}\n\nobject {pascal_mod_id} {{\n    const val MOD_ID = \"{mod_id}\"\n    fun init() {{}}\n}}"),
         ("common/src/main/kotlin", f"{package_path}/{mod_id}/client", f"{pascal_mod_id}Client.kt",
          f"package {package_name}.{mod_id}.client\n\nobject {pascal_mod_id}Client {{\n    fun init() {{}}\n}}"),
-
-        # Fabric
+        # Fabric Main (Updated to ModInitializer)
         ("fabric/src/main/kotlin", f"{package_path}/{mod_id}/fabric", f"{pascal_mod_id}Fabric.kt",
-         f"package {package_name}.{mod_id}.fabric\n\nimport {package_name}.{mod_id}.{pascal_mod_id}\n\nobject {pascal_mod_id}Fabric {{\n    fun init() {{\n        {pascal_mod_id}.init()\n    }}\n}}"),
-        ("fabric/src/main/kotlin", f"{package_path}/{mod_id}/client/fabric", f"{pascal_mod_id}FabricClient.kt",
-         f"package {package_name}.{mod_id}.client.fabric\n\nimport {package_name}.{mod_id}.client.{pascal_mod_id}Client\n\nobject {pascal_mod_id}FabricClient {{\n    fun init() {{\n        {pascal_mod_id}Client.init()\n    }}\n}}"),
+         f"""package {package_name}.{mod_id}.fabric
 
+import {package_name}.{mod_id}.{pascal_mod_id}
+import net.fabricmc.api.ModInitializer
+
+class {pascal_mod_id}Fabric: ModInitializer {{
+    override fun onInitialize() {{
+        {pascal_mod_id}.init()
+    }}
+}}"""),
+        # Fabric Client (Updated to ClientModInitializer)
+        ("fabric/src/main/kotlin", f"{package_path}/{mod_id}/client/fabric", f"{pascal_mod_id}FabricClient.kt",
+         f"""package {package_name}.{mod_id}.client.fabric
+
+import {package_name}.{mod_id}.client.{pascal_mod_id}Client
+import net.fabricmc.api.ClientModInitializer
+
+class {pascal_mod_id}FabricClient: ClientModInitializer {{
+    override fun onInitializeClient() {{
+        {pascal_mod_id}Client.init()
+    }}
+}}"""),
         # Forge Client (Forge Main is handled separately in create_forge_main)
         ("forge/src/main/kotlin", f"{package_path}/{mod_id}/client/forge", f"{pascal_mod_id}ForgeClient.kt",
          f"package {package_name}.{mod_id}.client.forge\n\nimport {package_name}.{mod_id}.client.{pascal_mod_id}Client\n\nobject {pascal_mod_id}ForgeClient {{\n    fun init() {{\n        {pascal_mod_id}Client.init()\n    }}\n}}"),
@@ -305,20 +322,14 @@ def update_fabric_mod_json(package_name, mod_id):
 
     # Build Entrypoints
     entrypoints = {
-        "main": [{
-            "adaptor": "kotlin",
-            "value": f"{base_pkg}.fabric.{pascal_mod_id}Fabric"
-        }],
-        "client": [{
-            "adaptor": "kotlin",
-            "value": f"{base_pkg}.client.fabric.{pascal_mod_id}FabricClient"
-        }]
+        "main": [f"{base_pkg}.fabric.{pascal_mod_id}Fabric"],
+        "client": [f"{base_pkg}.client.fabric.{pascal_mod_id}FabricClient"]
     }
 
     configs = [
         ("EXTEND_INIT_ENGINE", "aris-init", f"{base_pkg}.engine.fabric.{pascal_mod_id}FabricInitFunctionExtension"),
         ("EXTEND_CLIENT_INIT_ENGINE", "aris-client-init", f"{base_pkg}.engine.client.fabric.{pascal_mod_id}FabricClientInitFunctionExtension"),
-        ("EXTEND_CLIENT_MAIN_ENGINE", "aris-client", f"{base_pkg}.engine.client.fabric.{pascal_mod_id}FabricClientMainFunctionExtension"),
+        ("EXTEND_CLIENT_MAIN_ENGINE", "aris-client-main", f"{base_pkg}.engine.client.fabric.{pascal_mod_id}FabricClientMainFunctionExtension"),
         ("EXTEND_IN_GAME_ENGINE", "aris-game", f"{base_pkg}.engine.fabric.{pascal_mod_id}FabricInGameFunctionExtension"),
         ("EXTEND_CLIENT_IN_GAME_ENGINE", "aris-client-game", f"{base_pkg}.engine.client.fabric.{pascal_mod_id}FabricClientInGameFunctionExtension"),
     ]
