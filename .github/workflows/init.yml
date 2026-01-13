@@ -1,0 +1,116 @@
+name: Initialize Project
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_name:
+        description: 'Project Name'
+        required: true
+        default: 'Aris Extension Project'
+        type: string
+      mod_id:
+        description: 'Mod id'
+        required: true
+        default: 'arisextension'
+        type: string
+      mod_author:
+        description: 'Author'
+        required: false
+        default: 'Dayo'
+        type: string
+      package_name:
+        description: 'Package Name (e.g., com.example)'
+        required: true
+        default: 'com.example'
+        type: string
+      extend_init_engine:
+        description: 'Are you going to extend init engine?'
+        required: true
+        default: true
+        type: boolean
+      extend_in_game_engine:
+        description: 'Are you going to extend in-game engine?'
+        required: true
+        default: true
+        type: boolean
+      extend_client_init_engine:
+        description: 'Are you going to extend client init engine?'
+        required: true
+        default: true
+        type: boolean
+      extend_client_main_engine:
+        description: 'Are you going to extend client main engine?'
+        required: true
+        default: true
+        type: boolean
+      extend_client_in_game_engine:
+        description: 'Are you going to extend client in-game engine?'
+        required: true
+        default: true
+        type: boolean
+      archives_name:
+        description: 'Name for JAR'
+        required: true
+        default: 'aris-extension'
+        type: string
+      enable_forge:
+        description: 'Enable forge'
+        required: true
+        default: true
+        type: boolean
+      enable_fabric:
+        description: 'Enable fabric'
+        required: true
+        default: true
+        type: boolean
+      export_doc_on_build:
+        description: 'Export doc string on build'
+        required: true
+        default: true
+        type: boolean
+
+
+jobs:
+  setup-project:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run Setup Script
+        env:
+          PROJECT_NAME: ${{ inputs.project_name }}
+          PACKAGE_NAME: ${{ inputs.package_name }}
+          EXTEND_INIT_ENGINE: ${{ inputs.extend_init_engine }}
+          EXTEND_IN_GAME_ENGINE: ${{ inputs.extend_in_game_engine }}
+          EXTEND_CLIENT_INIT_ENGINE: ${{ inputs.extend_client_init_engine }}
+          EXTEND_CLIENT_MAIN_ENGINE: ${{ inputs.extend_client_main_engine }}
+          EXTEND_CLIENT_IN_GAME_ENGINE: ${{ inputs.extend_client_in_game_engine }}
+          ARCHIVES_NAME: ${{ inputs.archives_name }}
+          ENABLE_FORGE: ${{ inputs.enable_forge }}
+          ENABLE_FABRIC: ${{ inputs.enable_fabric }}
+          EXPORT_DOC_ON_BUILD: ${{ inputs.export_doc_on_build }}
+          MOD_ID: ${{ inputs.mod_id }}
+          MOD_AUTHOR: ${{ inputs.mod_author }}
+
+
+        run: |
+          python3 setup.py
+          
+          # Optional: Remove the setup files after running
+          rm setup.py
+          rm .github/workflows/init.yml
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Setup: Initialize project as ${{ inputs.project_name }}"
+          branch: ${{ github.ref }}

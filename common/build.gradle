@@ -24,7 +24,18 @@ kotlin {
     jvmToolchain(17)
 }
 
+processResources {
+    inputs.property 'mod_package', project.group
+    inputs.property 'mod_id', project.modId
+
+    filesMatching("${project.modId}.mixins.json") {
+        expand mod_id: project.modId
+        expand mod_package: project.group
+    }
+}
+
+// --- Auto-Generated Settings ---
 ksp {
-    arg("package_name", "me.ddayo.arisentity.lua.glue")
-    arg("export_doc", "true")
+    arg("package_name", "com.example.app.lua.glue")
+    arg("export_doc", "false")
 }

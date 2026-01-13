@@ -8,7 +8,7 @@ buildscript {
     }
 }
 plugins {
-    id 'dev.architectury.loom' version '1.9-SNAPSHOT' apply false
+    id 'dev.architectury.loom' version '1.13-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 }
@@ -21,6 +21,12 @@ architectury {
 allprojects {
     group = rootProject.maven_group
     version = rootProject.mod_version
+    ext {
+        modName = rootProject.mod_name
+        modDescription = rootProject.mod_description
+        modAuthors = rootProject.mod_authors
+        modId = rootProject.mod_id
+    }
 }
 
 subprojects {

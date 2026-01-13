@@ -1,31 +1,28 @@
 {
   "schemaVersion": 1,
-  "id": "aris-entity",
+  "id": "${mod_id}",
   "version": "${version}",
-  "name": "aris-entity",
-  "description": "Aris entity extension",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
   "authors": [
-    "Dayo"
+    "${mod_authors}"
   ],
   "contact": {
     "homepage": ""
   },
   "license": "All-Rights-Reserved",
-  "icon": "assets/aris-entity/icon.png",
+  "icon": "assets/${mod_id}/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "me.ddayo.arisentity.fabric.ArisEntityFabric"
+      "com.example.app.arisextension.fabric.ArisextensionFabric::init"
     ],
     "client": [
-      "me.ddayo.arisentity.fabric.client.ArisEntityFabricClient"
-    ],
-    "aris-init": [
-      "me.ddayo.arisentity.fabric.ArisEntityFabricInitEngineExtension"
+      "com.example.app.arisextension.client.fabric.ArisextensionFabricClient::init"
     ]
   },
   "mixins": [
-    "aris-entity.mixins.json"
+    "${mod_id}.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.14",

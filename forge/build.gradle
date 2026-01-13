@@ -5,7 +5,7 @@ plugins {
 
 loom {
     forge {
-        mixinConfig "aris-entity.mixins.json"
+        mixinConfig "${project.modId}.mixins.json"
     }
 }
 
@@ -51,9 +51,28 @@ dependencies {
 
 processResources {
     inputs.property 'version', project.version
+    inputs.property 'mod_id', project.modId
+    inputs.property 'mod_name', project.modName
+    inputs.property 'mod_description', project.modDescription
+    inputs.property 'mod_authors', project.modAuthors
 
     filesMatching('META-INF/mods.toml') {
-        expand version: project.version
+        expand(
+                version: project.version,
+                mod_id: project.modId,
+                mod_name: project.modName,
+                mod_description: project.modDescription,
+                mod_authors: project.modAuthors,
+        )
+    }
+    filesMatching('pack.mcmeta') {
+        expand(
+                version: project.version,
+                mod_id: project.modId,
+                mod_name: project.modName,
+                mod_description: project.modDescription,
+                mod_authors: project.modAuthors,
+        )
     }
 }
 
