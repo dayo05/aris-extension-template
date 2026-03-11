@@ -6,7 +6,8 @@ pluginManagement {
         gradlePluginPortal()
     }
     plugins {
-        id 'com.google.devtools.ksp' version '2.1.20-2.0.0'
+        id 'org.jetbrains.kotlin.jvm' version '2.3.0'
+        id 'com.google.devtools.ksp' version '2.3.5'
     }
 }
 plugins {
@@ -20,10 +21,10 @@ includeBuild('aris-mc') {
     dependencySubstitution {
         substitute module('me.ddayo:aris-common') using project(':common')
         substitute module('me.ddayo:aris-fabric') using project(':fabric')
-        substitute module('me.ddayo:aris-forge') using project(':forge')
+        substitute module('me.ddayo:aris-neoforge') using project(':neoforge')
     }
 }
 
 include 'common'
 include 'fabric'
-include 'forge'
+include 'neoforge'

@@ -21,12 +21,12 @@ def to_pascal_case(text):
 def update_gradle_properties(mod_id, package_name, archives_name, mod_description, mod_author, export_doc):
     print("📝 Updating gradle.properties...")
 
-    enable_forge = os.getenv("ENABLE_FORGE", "true").lower() == 'true'
+    enable_neoforge = os.getenv("ENABLE_NEOFORGE", "true").lower() == 'true'
     enable_fabric = os.getenv("ENABLE_FABRIC", "true").lower() == 'true'
 
     platforms = []
     if enable_fabric: platforms.append("fabric")
-    if enable_forge: platforms.append("forge")
+    if enable_neoforge: platforms.append("neoforge")
     platforms_str = ",".join(platforms) if platforms else "fabric"
 
     engine_flags = {
@@ -73,7 +73,7 @@ def update_gradle_properties(mod_id, package_name, archives_name, mod_descriptio
 def update_settings_gradle(archives_name):
     print("⚙️ Updating settings.gradle...")
 
-    enable_forge = os.getenv("ENABLE_FORGE", "true").lower() == 'true'
+    enable_neoforge = os.getenv("ENABLE_NEOFORGE", "true").lower() == 'true'
     enable_fabric = os.getenv("ENABLE_FABRIC", "true").lower() == 'true'
     settings_path = "settings.gradle"
     marker = "// --- Auto-Generated Settings ---"
@@ -82,11 +82,11 @@ def update_settings_gradle(archives_name):
     repositories {
         maven { url "https://maven.fabricmc.net/" }
         maven { url "https://maven.architectury.dev/" }
-        maven { url "https://files.minecraftforge.net/maven/" }
+        maven { url "https://maven.neoforged.net/releases/" }
         gradlePluginPortal()
     }
     plugins {
-        id 'com.google.devtools.ksp' version '2.1.20-2.0.0'
+        id 'com.google.devtools.ksp' version '2.3.5'
     }
 }
 plugins {
@@ -107,10 +107,10 @@ plugins {
 
     auto_content = f"{marker}\nrootProject.name = '{archives_name}'\n\nincludeBuild('aris-mc') {{\n    dependencySubstitution {{\n        substitute module('me.ddayo:aris-common') using project(':common')\n"
     if enable_fabric: auto_content += "        substitute module('me.ddayo:aris-fabric') using project(':fabric')\n"
-    if enable_forge: auto_content += "        substitute module('me.ddayo:aris-forge') using project(':forge')\n"
+    if enable_neoforge: auto_content += "        substitute module('me.ddayo:aris-neoforge') using project(':neoforge')\n"
     auto_content += "    }\n}\n\ninclude 'common'\n"
     if enable_fabric: auto_content += "include 'fabric'\n"
-    if enable_forge: auto_content += "include 'forge'\n"
+    if enable_neoforge: auto_content += "include 'neoforge'\n"
 
     with open(settings_path, "w", encoding="utf-8") as f:
         f.writelines(final_lines)
@@ -175,17 +175,17 @@ class {pascal_mod_id}FabricClient: ClientModInitializer {{
         {pascal_mod_id}Client.init()
     }}
 }}"""),
-        # Forge Client (Forge Main is handled separately in create_forge_main)
-        ("forge/src/main/kotlin", f"{package_path}/{mod_id}/client/forge", f"{pascal_mod_id}ForgeClient.kt",
-         f"package {package_name}.{mod_id}.client.forge\n\nimport {package_name}.{mod_id}.client.{pascal_mod_id}Client\n\nobject {pascal_mod_id}ForgeClient {{\n    fun init() {{\n        {pascal_mod_id}Client.init()\n    }}\n}}"),
+        # NeoForge Client (NeoForge Main is handled separately in create_neoforge_main)
+        ("neoforge/src/main/kotlin", f"{package_path}/{mod_id}/client/neoforge", f"{pascal_mod_id}NeoForgeClient.kt",
+         f"package {package_name}.{mod_id}.client.neoforge\n\nimport {package_name}.{mod_id}.client.{pascal_mod_id}Client\n\nobject {pascal_mod_id}NeoForgeClient {{\n    fun init() {{\n        {pascal_mod_id}Client.init()\n    }}\n}}"),
     ]
 
-    enable_forge = os.getenv("ENABLE_FORGE", "true").lower() == 'true'
+    enable_neoforge = os.getenv("ENABLE_NEOFORGE", "true").lower() == 'true'
     enable_fabric = os.getenv("ENABLE_FABRIC", "true").lower() == 'true'
 
     for root, sub, filename, content in templates:
         if "fabric" in root and not enable_fabric: continue
-        if "forge" in root and not enable_forge: continue
+        if "neoforge" in root and not enable_neoforge: continue
         full_dir = os.path.join(root, sub)
         os.makedirs(full_dir, exist_ok=True)
         with open(os.path.join(full_dir, filename), "w", encoding="utf-8") as f:
@@ -228,7 +228,7 @@ import me.ddayo.aris.luagen.LuaProvider
 object {provider_name} {{
     const val PROVIDER = "{provider_const}Generated"
     @LuaFunction
-    fun dummy() {}
+    fun dummy() {{}}
 }}""")
 
         # 2. Fabric Extension
@@ -252,24 +252,24 @@ class {pascal_mod_id}Fabric{suffix}Extension : EngineInitializer<{engine_type}> 
 
     print("✅ Engine extensions generated.")
 
-def create_forge_main(package_name, mod_id):
-    print("🛠️ Generating Forge Main Class...")
+def create_neoforge_main(package_name, mod_id):
+    print("🛠️ Generating NeoForge Main Class...")
     pascal_mod_id = to_pascal_case(mod_id)
     package_path = package_name.replace('.', '/')
 
     # 1. Prepare Imports
     import_list = [
-        f"package {package_name}.{mod_id}.forge",
+        f"package {package_name}.{mod_id}.neoforge",
         "",
-        "import me.ddayo.aris.forge.ArisForge",
+        "import me.ddayo.aris.neoforge.ArisNeoForge",
         f"import {package_name}.{mod_id}.{pascal_mod_id}",
-        "import net.minecraftforge.fml.common.Mod",
-        "import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent",
-        "import thedarkcolour.kotlinforforge.forge.MOD_BUS"
+        "import net.neoforged.bus.api.IEventBus",
+        "import net.neoforged.fml.common.Mod",
+        "import net.neoforged.fml.event.lifecycle.FMLConstructModEvent"
     ]
 
-    # 2. Configure Engine Map for Forge
-    # (EnvKey, ArisForgeList, ProviderSuffix)
+    # 2. Configure Engine Map for NeoForge
+    # (EnvKey, ArisNeoForgeList, ProviderSuffix)
     engine_map = [
         ("EXTEND_INIT_ENGINE", "initExtensions", "InitProviderGenerated"),
         ("EXTEND_IN_GAME_ENGINE", "inGameExtensions", "InGameProviderGenerated"),
@@ -288,8 +288,8 @@ def create_forge_main(package_name, mod_id):
             import_list.append(f"import {package_name}.{mod_id}.lua.glue.{gen_class}")
 
             # Create listener block
-            block = f"""        MOD_BUS.addListener {{ it: FMLConstructModEvent ->
-            ArisForge.{aris_list}.add {{
+            block = f"""        modBus.addListener {{ it: FMLConstructModEvent ->
+            ArisNeoForge.{aris_list}.add {{
                 {gen_class}.initEngine(it)
             }}
         }}"""
@@ -300,7 +300,7 @@ def create_forge_main(package_name, mod_id):
     content = f"""{"\n".join(import_list)}
 
 @Mod({pascal_mod_id}.MOD_ID)
-class {pascal_mod_id}Forge {{
+class {pascal_mod_id}NeoForge(modBus: IEventBus) {{
     init {{
 {listeners_str}
         {pascal_mod_id}.init()
@@ -308,11 +308,11 @@ class {pascal_mod_id}Forge {{
 }}"""
 
     # 4. Write File
-    path = f"forge/src/main/kotlin/{package_path}/{mod_id}/forge/{pascal_mod_id}Forge.kt"
+    path = f"neoforge/src/main/kotlin/{package_path}/{mod_id}/neoforge/{pascal_mod_id}NeoForge.kt"
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"✅ Created {pascal_mod_id}Forge.kt with {len(listener_blocks)} engine extensions.")
+    print(f"✅ Created {pascal_mod_id}NeoForge.kt with {len(listener_blocks)} engine extensions.")
 
 def update_fabric_mod_json(package_name, mod_id):
     print("🧵 Injecting hardcoded entrypoints into fabric.mod.json...")
@@ -370,15 +370,15 @@ def finalize_mixin_rename(mod_id):
 
 def cleanup_unused_platforms():
     print("🧹 Cleaning up unused platforms...")
-    enable_forge = os.getenv("ENABLE_FORGE", "true").lower() == 'true'
+    enable_neoforge = os.getenv("ENABLE_NEOFORGE", "true").lower() == 'true'
     enable_fabric = os.getenv("ENABLE_FABRIC", "true").lower() == 'true'
 
     if not enable_fabric and os.path.exists("fabric"):
         shutil.rmtree("fabric")
         print("   -> Removed fabric/ directory")
-    if not enable_forge and os.path.exists("forge"):
-        shutil.rmtree("forge")
-        print("   -> Removed forge/ directory")
+    if not enable_neoforge and os.path.exists("neoforge"):
+        shutil.rmtree("neoforge")
+        print("   -> Removed neoforge/ directory")
 
 # --- Main Execution ---
 
@@ -412,8 +412,8 @@ def main():
     if os.getenv("ENABLE_FABRIC", "true").lower() == 'true':
         update_fabric_mod_json(PACKAGE_NAME, MOD_ID)
 
-    if os.getenv("ENABLE_FORGE", "true").lower() == 'true':
-        create_forge_main(PACKAGE_NAME, MOD_ID)
+    if os.getenv("ENABLE_NEOFORGE", "true").lower() == 'true':
+        create_neoforge_main(PACKAGE_NAME, MOD_ID)
 
     cleanup_unused_platforms()
     print("🎉 Setup complete!")

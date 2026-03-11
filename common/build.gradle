@@ -15,13 +15,13 @@ dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     ksp "me.ddayo:ap"
     implementation "me.ddayo:aris.luagen"
-    implementation "party.iroiro.luajava:luajit:4.0.0"
+    implementation "party.iroiro.luajava:luajit:4.0.2"
 }
 repositories {
     mavenCentral()
 }
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 processResources {

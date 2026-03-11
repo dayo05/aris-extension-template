@@ -53,8 +53,8 @@ on:
         required: true
         default: 'aris-extension'
         type: string
-      enable_forge:
-        description: 'Enable forge'
+      enable_neoforge:
+        description: 'Enable neoforge'
         required: true
         default: true
         type: boolean
@@ -95,7 +95,7 @@ jobs:
           EXTEND_CLIENT_MAIN_ENGINE: ${{ inputs.extend_client_main_engine }}
           EXTEND_CLIENT_IN_GAME_ENGINE: ${{ inputs.extend_client_in_game_engine }}
           ARCHIVES_NAME: ${{ inputs.archives_name }}
-          ENABLE_FORGE: ${{ inputs.enable_forge }}
+          ENABLE_NEOFORGE: ${{ inputs.enable_neoforge }}
           ENABLE_FABRIC: ${{ inputs.enable_fabric }}
           EXPORT_DOC_ON_BUILD: ${{ inputs.export_doc_on_build }}
           MOD_ID: ${{ inputs.mod_id }}
