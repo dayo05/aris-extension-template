@@ -1,18 +1,25 @@
 # Aris extension template
 
-## Usage
+Starter template for Aris Minecraft mod extensions (Fabric + NeoForge via
+Architectury). Dependencies — `me.ddayo:aris`, `me.ddayo:aris-fabric`,
+`me.ddayo:aris-neoforge`, `me.ddayo:aris.luagen`, `me.ddayo:ap` — resolve
+from the kei-managed Maven repo at <https://kei.ddayo.me/maven>.
 
-### Initialization step
-1. Create github repository from this template
-2. Goto Actions -> Run Initialize project
-3. Clone into your local
-4. Run `git submodule update --remote --recursive` to retrieve latest code for aris
-5. cd into aris-mc then run `./gradlew build -Penv=slave`
-  >  This is mandatory due to [bug of loom+gradle-composite](https://github.com/FabricMC/fabric-loom/issues/685). This will create `aris-1.0.0.jar` artifact which makes loom possible to resolve metadata
-6. Now RUN!
+## Initialization
 
-### Updating ARIS dependency
-1. Run `git submodule update --remote --recursive`
-2. (Optional but mandatory if update not applied) remove /.gradle directory to your root project
-3. cd into aris-mc and run `./gradlew build -Penv=slave`
-4. Now RUN!
+1. Create a GitHub repository from this template.
+2. **Actions → Initialize Project → Run workflow.** Fill in mod id,
+   package, archives name, fabric/neoforge toggles, and which engine hooks
+   you plan to extend. The workflow runs `setup.py` to rewrite the project
+   accordingly, commits the result, and removes the bootstrap files
+   (`setup.py`, `.github/workflows/init.yml`).
+3. Clone the repo locally and run `./gradlew build`.
+
+## Updating ARIS dependencies
+
+The aris artifacts are published as SNAPSHOTs, so a normal `./gradlew build`
+will only refetch them every 24 hours. To pick up a fresh publish:
+
+```
+./gradlew build --refresh-dependencies
+```
