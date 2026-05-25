@@ -105,10 +105,7 @@ plugins {
     else:
         final_lines = [default_header + "\n"]
 
-    auto_content = f"{marker}\nrootProject.name = '{archives_name}'\n\nincludeBuild('aris-mc') {{\n    dependencySubstitution {{\n        substitute module('me.ddayo:aris-common') using project(':common')\n"
-    if enable_fabric: auto_content += "        substitute module('me.ddayo:aris-fabric') using project(':fabric')\n"
-    if enable_neoforge: auto_content += "        substitute module('me.ddayo:aris-neoforge') using project(':neoforge')\n"
-    auto_content += "    }\n}\n\ninclude 'common'\n"
+    auto_content = f"{marker}\nrootProject.name = '{archives_name}'\n\ninclude 'common'\n"
     if enable_fabric: auto_content += "include 'fabric'\n"
     if enable_neoforge: auto_content += "include 'neoforge'\n"
 

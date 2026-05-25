@@ -11,10 +11,10 @@ dependencies {
     // which get remapped to the correct annotations on each platform.
     // Do NOT use other classes from Fabric Loader.
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
-    modCompileOnly "me.ddayo:aris-common"
+    modCompileOnly "me.ddayo:aris:1.1.0-SNAPSHOT"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    ksp "me.ddayo:ap"
-    implementation "me.ddayo:aris.luagen"
+    ksp "me.ddayo:ap:1.0-SNAPSHOT"
+    implementation "me.ddayo:aris.luagen:1.0-SNAPSHOT"
     implementation "party.iroiro.luajava:luajit:4.0.2"
 }
 repositories {

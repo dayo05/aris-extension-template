@@ -2,7 +2,7 @@ pluginManagement {
     repositories {
         maven { url "https://maven.fabricmc.net/" }
         maven { url "https://maven.architectury.dev/" }
-        maven { url "https://files.minecraftforge.net/maven/" }
+        maven { url "https://maven.neoforged.net/releases/" }
         gradlePluginPortal()
     }
     plugins {
@@ -16,14 +16,6 @@ plugins {
 
 // --- Auto-Generated Settings ---
 rootProject.name = 'aris-extension'
-
-includeBuild('aris-mc') {
-    dependencySubstitution {
-        substitute module('me.ddayo:aris-common') using project(':common')
-        substitute module('me.ddayo:aris-fabric') using project(':fabric')
-        substitute module('me.ddayo:aris-neoforge') using project(':neoforge')
-    }
-}
 
 include 'common'
 include 'fabric'
