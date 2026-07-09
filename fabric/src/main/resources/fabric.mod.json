@@ -15,10 +15,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.example.app.arisextension.fabric.ArisextensionFabric::init"
+      "com.example.app.arisextension.fabric.ArisextensionFabric"
     ],
     "client": [
-      "com.example.app.arisextension.client.fabric.ArisextensionFabricClient::init"
+      "com.example.app.arisextension.client.fabric.ArisextensionFabricClient"
     ]
   },
   "mixins": [

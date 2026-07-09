@@ -37,7 +37,7 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 
-    modImplementation "me.ddayo:aris-neoforge:1.1.0-SNAPSHOT"
+    modImplementation("me.ddayo:aris-neoforge:1.1.0-SNAPSHOT") { transitive false }
     implementation 'thedarkcolour:kotlinforforge-neoforge:5.11.0'
 }
 
@@ -47,23 +47,16 @@ processResources {
     inputs.property 'mod_name', project.modName
     inputs.property 'mod_description', project.modDescription
     inputs.property 'mod_authors', project.modAuthors
+    inputs.property 'minecraft_version', rootProject.minecraft_version
 
-    filesMatching('META-INF/neoforge.mods.toml') {
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
         expand(
                 version: project.version,
                 mod_id: project.modId,
                 mod_name: project.modName,
                 mod_description: project.modDescription,
                 mod_authors: project.modAuthors,
-        )
-    }
-    filesMatching('pack.mcmeta') {
-        expand(
-                version: project.version,
-                mod_id: project.modId,
-                mod_name: project.modName,
-                mod_description: project.modDescription,
-                mod_authors: project.modAuthors,
+                minecraft_version: rootProject.minecraft_version,
         )
     }
 }
