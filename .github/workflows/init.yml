@@ -109,6 +109,7 @@ jobs:
           
           # Optional: Remove the setup files after running
           rm setup.py
+          rm LICENSE.txt
           rm .github/workflows/init.yml
 
       - name: Commit and Push Changes
